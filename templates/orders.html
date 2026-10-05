@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Siparişlerim - LUNERA{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-primary">Siparişlerim</h1>
+            <a href="{{ url_for('profile') }}" class="text-sm text-textMuted hover:text-primary"><i class="fa-solid fa-arrow-left mr-1"></i> Profile Dön</a>
+        </div>
+        
+        {% if orders %}
+        <div class="space-y-6">
+            {% for order in orders %}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex flex-col md:flex-row gap-4 md:gap-8 text-sm">
+                        <div>
+                            <span class="block text-textMuted mb-1">Sipariş Tarihi</span>
+                            <span class="font-medium text-textMain">{{ order.created_at.strftime('%d.%m.%Y') }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-textMuted mb-1">Sipariş Özeti</span>
+                            <span class="font-medium text-textMain">{{ order.items|length }} Ürün</span>
+                        </div>
+                        <div>
+                            <span class="block text-textMuted mb-1">Toplam Tutar</span>
+                            <span class="font-bold text-primary">₺{{ "{:,.2f}".format(order.total_price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="block text-textMuted mb-1 text-sm">Sipariş No</span>
+                        <span class="font-bold text-primary">{{ order.order_number }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-primary flex items-center gap-2">
+                            <i class="fa-solid fa-box text-textMuted"></i> Durum: 
+                            <span class="text-yellow-600">{{ order.status }}</span>
+                        </h3>
+                        <a href="#" class="text-primary font-medium text-sm hover:underline border border-gray-300 rounded px-4 py-2 hover:bg-gray-50">Fatura İndir</a>
+                    </div>
+                    
+                    <div class="space-y-4 divide-y divide-gray-100">
+                        {% for item in order.items %}
+                        {% set p = Product.query.get(item.product_id) %}
+                        <div class="pt-4 first:pt-0 flex gap-4">
+                            <img src="{{ p.image }}" class="w-20 h-24 object-cover rounded bg-gray-100 border border-gray-200">
+                            <div class="flex-grow">
+                                <a href="{{ url_for('product_detail', id=p.id) }}" class="font-bold text-primary hover:underline line-clamp-1">{{ p.name }}</a>
+                                <p class="text-sm text-textMuted mt-1">{{ item.quantity }} Adet - Beden: {{ item.size }}</p>
+                                <p class="font-medium text-primary mt-2">₺{{ "{:,.2f}".format(item.price).replace(',','X').replace('.',',').replace('X','.') }}</p>
+                            </div>
+                            <div class="hidden md:flex flex-col justify-center">
+                                <button class="text-primary text-sm font-medium hover:underline">Tekrar Satın Al</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="flex flex-col items-center justify-center py-20 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
+            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-gray-400 text-3xl mb-4 shadow-sm">
+                <i class="fa-solid fa-box-open"></i>
+            </div>
+            <h2 class="text-xl font-bold text-primary mb-2">Henüz siparişiniz bulunmuyor.</h2>
+            <p class="text-textMuted mb-6">Alışverişe başlayarak ilk siparişinizi oluşturun.</p>
+            <a href="{{ url_for('index') }}" class="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                Alışverişe Başla
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

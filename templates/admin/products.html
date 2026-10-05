@@ -1,0 +1,66 @@
+{% extends "admin/base_admin.html" %}
+
+{% block admin_content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-primary">Ürün Yönetimi</h1>
+    <a href="{{ url_for('admin_add_product') }}" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+        <i class="fa-solid fa-plus mr-1"></i> Yeni Ürün Ekle
+    </a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-xs text-textMuted uppercase border-b border-gray-100">
+                    <th class="px-6 py-4 font-medium">Görsel</th>
+                    <th class="px-6 py-4 font-medium">Ürün Adı</th>
+                    <th class="px-6 py-4 font-medium">Kategori</th>
+                    <th class="px-6 py-4 font-medium">Fiyat</th>
+                    <th class="px-6 py-4 font-medium text-center">Stok</th>
+                    <th class="px-6 py-4 font-medium text-right">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for product in products %}
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-3">
+                        <img src="{{ product.image }}" class="w-12 h-16 object-cover rounded border border-gray-200">
+                    </td>
+                    <td class="px-6 py-3 font-medium text-primary">{{ product.name }}</td>
+                    <td class="px-6 py-3 text-textMuted">{{ product.category.name }}</td>
+                    <td class="px-6 py-3 font-medium">
+                        {% if product.discount_price %}
+                        <span class="text-error">₺{{ "{:,.2f}".format(product.discount_price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                        {% else %}
+                        <span>₺{{ "{:,.2f}".format(product.price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-3 text-center">
+                        {% if product.stock == 0 %}
+                        <span class="bg-red-100 text-error text-xs px-2 py-1 rounded font-bold">TÜKENDİ</span>
+                        {% elif product.stock < 5 %}
+                        <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded font-bold">{{ product.stock }}</span>
+                        {% else %}
+                        <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold">{{ product.stock }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-3 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ url_for('admin_edit_product', id=product.id) }}" class="text-blue-500 hover:text-blue-700 p-2" title="Düzenle">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <form action="{{ url_for('admin_delete_product', id=product.id) }}" method="POST" onsubmit="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                                <button type="submit" class="text-red-500 hover:text-red-700 p-2" title="Sil">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "admin/base_admin.html" %}
+
+{% block admin_content %}
+<h1 class="text-2xl font-bold text-primary mb-6">Genel Bakış (Dashboard)</h1>
+
+<!-- İstatistik Kartları -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Kart 1 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mr-4">
+            <i class="fa-solid fa-shirt"></i>
+        </div>
+        <div>
+            <p class="text-sm font-medium text-textMuted">Toplam Ürün</p>
+            <p class="text-2xl font-bold text-primary">{{ product_count }}</p>
+        </div>
+    </div>
+    <!-- Kart 2 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mr-4">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+            <p class="text-sm font-medium text-textMuted">Kullanıcılar</p>
+            <p class="text-2xl font-bold text-primary">{{ user_count }}</p>
+        </div>
+    </div>
+    <!-- Kart 3 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl mr-4">
+            <i class="fa-solid fa-box"></i>
+        </div>
+        <div>
+            <p class="text-sm font-medium text-textMuted">Siparişler</p>
+            <p class="text-2xl font-bold text-primary">{{ order_count }}</p>
+        </div>
+    </div>
+    <!-- Kart 4 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl mr-4">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+        <div>
+            <p class="text-sm font-medium text-textMuted">Toplam Satış</p>
+            <p class="text-2xl font-bold text-primary">₺{{ "{:,.2f}".format(total_sales).replace(',','X').replace('.',',').replace('X','.') }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stok Uyarısı -->
+{% if low_stock_products %}
+<div class="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden mb-8">
+    <div class="bg-red-50 border-b border-red-200 px-6 py-4 flex items-center gap-3">
+        <i class="fa-solid fa-triangle-exclamation text-error text-xl"></i>
+        <h2 class="font-bold text-error">Stoku Azalan Ürünler (Kritik Seviye: 5 altı)</h2>
+    </div>
+    <div class="p-0">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-xs text-textMuted uppercase border-b border-gray-100">
+                    <th class="px-6 py-3 font-medium">Ürün Adı</th>
+                    <th class="px-6 py-3 font-medium">Kategori</th>
+                    <th class="px-6 py-3 font-medium text-center">Stok Durumu</th>
+                    <th class="px-6 py-3 font-medium text-right">İşlem</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for product in low_stock_products %}
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 font-medium text-primary">{{ product.name }}</td>
+                    <td class="px-6 py-4 text-textMuted">{{ product.category.name }}</td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="bg-red-100 text-error px-2 py-1 rounded font-bold">{{ product.stock }} Adet</span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ url_for('admin_edit_product', id=product.id) }}" class="text-blue-600 hover:underline">Düzenle</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

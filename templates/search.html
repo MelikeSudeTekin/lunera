@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Arama Sonuçları - LUNERA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="mb-8 border-b border-gray-100 pb-6">
+        <h1 class="text-3xl font-bold text-primary mb-2">
+            {% if query %}
+            "{{ query }}" için sonuçlar
+            {% else %}
+            Tüm Ürünler
+            {% endif %}
+        </h1>
+        <p class="text-textMuted">{{ products|length }} ürün bulundu.</p>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Filtreler -->
+        <div class="w-full md:w-64 flex-shrink-0">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                <h3 class="font-bold text-primary mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-filter"></i> Filtrele
+                </h3>
+                
+                <form action="{{ url_for('search') }}" method="GET" class="space-y-6">
+                    {% if query %}
+                    <input type="hidden" name="q" value="{{ query }}">
+                    {% endif %}
+                    
+                    <div>
+                        <h4 class="text-sm font-bold text-textMain uppercase tracking-wider mb-3">Kategori</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="category" value="" {% if not current_category %}checked{% endif %} class="text-primary focus:ring-primary w-4 h-4">
+                                <span class="ml-2 text-sm text-textMuted">Tümü</span>
+                            </label>
+                            {% for cat in categories %}
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="category" value="{{ cat.id }}" {% if current_category == cat.id|string %}checked{% endif %} class="text-primary focus:ring-primary w-4 h-4">
+                                <span class="ml-2 text-sm text-textMuted">{{ cat.name }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-bold text-textMain uppercase tracking-wider mb-3">Sıralama</h4>
+                        <select name="sort" class="w-full text-sm px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary bg-white">
+                            <option value="newest" {% if current_sort == 'newest' or not current_sort %}selected{% endif %}>En Yeniler</option>
+                            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Fiyat (Artan)</option>
+                            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Fiyat (Azalan)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary text-white py-2 rounded font-medium hover:bg-gray-800 transition-colors">
+                        Uygula
+                    </button>
+                    
+                    {% if query or current_category or current_sort %}
+                    <a href="{{ url_for('search') }}" class="block text-center text-sm text-textMuted hover:text-primary mt-2">Filtreleri Temizle</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <!-- Ürünler Grid -->
+        <div class="flex-grow">
+            {% if products %}
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {% from "_macros.html" import product_card with context %}
+                {% for product in products %}
+                    {{ product_card(product) }}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-gray-50 border border-dashed border-gray-300 rounded-xl py-20 flex flex-col items-center justify-center text-center px-4">
+                <i class="fa-solid fa-magnifying-glass text-gray-300 text-5xl mb-4"></i>
+                <h3 class="text-xl font-bold text-primary mb-2">Ürün bulunamadı</h3>
+                <p class="text-textMuted">Arama kriterlerinize uygun bir ürün bulamadık. Lütfen farklı kelimelerle tekrar deneyin.</p>
+                <a href="{{ url_for('index') }}" class="mt-6 bg-primary text-white px-6 py-2 rounded-full font-medium hover:bg-gray-800 transition-colors">
+                    Ana Sayfaya Dön
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

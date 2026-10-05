@@ -1,0 +1,46 @@
+{% extends "admin/base_admin.html" %}
+
+{% block admin_content %}
+<h1 class="text-2xl font-bold text-primary mb-6">Sipariş Yönetimi</h1>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-xs text-textMuted uppercase border-b border-gray-100">
+                    <th class="px-6 py-4 font-medium">Sipariş No</th>
+                    <th class="px-6 py-4 font-medium">Müşteri</th>
+                    <th class="px-6 py-4 font-medium">Tarih</th>
+                    <th class="px-6 py-4 font-medium">Tutar</th>
+                    <th class="px-6 py-4 font-medium">Durum</th>
+                    <th class="px-6 py-4 font-medium text-right">İşlem</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for order in orders %}
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 font-bold text-primary">{{ order.order_number }}</td>
+                    <td class="px-6 py-4 font-medium">{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                    <td class="px-6 py-4 text-textMuted">{{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td class="px-6 py-4 font-bold">₺{{ "{:,.2f}".format(order.total_price).replace(',','X').replace('.',',').replace('X','.') }}</td>
+                    <td class="px-6 py-4">
+                        <form action="{{ url_for('admin_order_status', id=order.id) }}" method="POST" class="flex items-center gap-2">
+                            <select name="status" class="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-white">
+                                <option value="Hazırlanıyor" {% if order.status == 'Hazırlanıyor' %}selected{% endif %}>Hazırlanıyor</option>
+                                <option value="Kargoya Verildi" {% if order.status == 'Kargoya Verildi' %}selected{% endif %}>Kargoya Verildi</option>
+                                <option value="Teslim Edildi" {% if order.status == 'Teslim Edildi' %}selected{% endif %}>Teslim Edildi</option>
+                                <option value="İptal Edildi" {% if order.status == 'İptal Edildi' %}selected{% endif %}>İptal Edildi</option>
+                            </select>
+                            <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-textMain px-2 py-1 rounded text-xs transition-colors">Güncelle</button>
+                        </form>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button class="text-primary hover:underline text-xs" onclick="alert('Adres:\n{{ order.address }}\nTelefon:\n{{ order.phone }}\n\nNot: Demo versiyonda adres detayı alert olarak gösterilir.')">Detay Gör</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

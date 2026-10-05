@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}LUNERA - Yeni Sezonu Keşfet{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-secondary overflow-hidden">
+    <div class="absolute inset-0 bg-gray-200">
+        <div class="w-full h-full bg-cover bg-center opacity-60" style="background-image: url('https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10 py-32 md:py-48 flex flex-col items-center justify-center text-center">
+        <h2 class="text-sm font-bold tracking-widest uppercase mb-4 text-primary">NEW SEASON</h2>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 text-primary tracking-tight">Yeni Sezonu Keşfet</h1>
+        <p class="text-lg md:text-xl text-textMain mb-10 max-w-2xl">Modern çizgiler, premium kumaşlar ve göz alıcı tasarımlar. LUNERA ile tarzınızı yeniden tanımlayın.</p>
+        <a href="#" class="bg-primary text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-gray-800 transition-colors shadow-lg hover:shadow-xl inline-flex items-center justify-center">
+            Alışverişe Başla
+        </a>
+    </div>
+</section>
+
+<!-- Kategoriler -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <a href="#" class="group relative h-64 md:h-80 rounded-lg overflow-hidden block">
+                <div class="absolute inset-0 bg-gray-200">
+                    <img src="https://images.unsplash.com/photo-1551163943-3f6a855d1153?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Kadın" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                <div class="absolute bottom-6 left-0 right-0 text-center text-white">
+                    <h3 class="text-xl font-bold tracking-wide uppercase">Kadın</h3>
+                </div>
+            </a>
+            
+            <a href="#" class="group relative h-64 md:h-80 rounded-lg overflow-hidden block">
+                <div class="absolute inset-0 bg-gray-200">
+                    <img src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Erkek" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                <div class="absolute bottom-6 left-0 right-0 text-center text-white">
+                    <h3 class="text-xl font-bold tracking-wide uppercase">Erkek</h3>
+                </div>
+            </a>
+            
+            <a href="#" class="group relative h-64 md:h-80 rounded-lg overflow-hidden block">
+                <div class="absolute inset-0 bg-gray-200">
+                    <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Çocuk" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                <div class="absolute bottom-6 left-0 right-0 text-center text-white">
+                    <h3 class="text-xl font-bold tracking-wide uppercase">Çocuk</h3>
+                </div>
+            </a>
+            
+            <a href="#" class="group relative h-64 md:h-80 rounded-lg overflow-hidden block">
+                <div class="absolute inset-0 bg-gray-200">
+                    <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ayakkabı" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                <div class="absolute bottom-6 left-0 right-0 text-center text-white">
+                    <h3 class="text-xl font-bold tracking-wide uppercase">Ayakkabı</h3>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% from "_macros.html" import product_card with context %}
+
+<!-- Yeni Gelenler -->
+<section class="py-16 bg-secondary">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-primary mb-2">Yeni Gelenler</h2>
+                <p class="text-textMuted">Sezonun en trend parçalarını keşfedin.</p>
+            </div>
+            <a href="#" class="hidden md:inline-flex text-primary font-medium hover:underline items-center gap-1">Tümünü Gör <i class="fa-solid fa-arrow-right text-sm"></i></a>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {% for product in new_arrivals %}
+                {{ product_card(product) }}
+            {% endfor %}
+        </div>
+        <div class="mt-8 text-center md:hidden">
+            <a href="#" class="inline-flex text-primary font-medium hover:underline items-center gap-1 border border-primary px-6 py-2 rounded-full">Tümünü Gör</a>
+        </div>
+    </div>
+</section>
+
+<!-- Çok Satanlar -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-primary mb-2">Çok Satanlar</h2>
+                <p class="text-textMuted">En çok tercih edilen ürünlerimiz.</p>
+            </div>
+            <a href="#" class="hidden md:inline-flex text-primary font-medium hover:underline items-center gap-1">Tümünü Gör <i class="fa-solid fa-arrow-right text-sm"></i></a>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {% for product in best_sellers %}
+                {{ product_card(product) }}
+            {% endfor %}
+        </div>
+        <div class="mt-8 text-center md:hidden">
+            <a href="#" class="inline-flex text-primary font-medium hover:underline items-center gap-1 border border-primary px-6 py-2 rounded-full">Tümünü Gör</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

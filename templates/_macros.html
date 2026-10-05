@@ -1,0 +1,54 @@
+{% macro product_card(product) %}
+<div class="group relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full">
+    <!-- Image & Badges -->
+    <a href="{{ url_for('product_detail', id=product.id) }}" class="relative aspect-[3/4] bg-gray-100 overflow-hidden block">
+        <img src="{{ product.image or 'https://via.placeholder.com/400x533?text=LUNERA' }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        
+        <!-- Badges -->
+        <div class="absolute top-3 left-3 flex flex-col gap-2 z-20">
+            {% if product.discount_price %}
+                {% set discount_pct = ((product.price - product.discount_price) / product.price * 100) | round | int %}
+                <span class="bg-error text-white text-xs font-bold px-2 py-1 rounded shadow-sm">%{{ discount_pct }} İNDİRİM</span>
+            {% endif %}
+            {% if product.stock == 0 %}
+                <span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-sm">TÜKENDİ</span>
+            {% endif %}
+        </div>
+        
+        <!-- Quick Add Button Overlay -->
+        <div class="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0 z-20">
+            {% if product.stock > 0 %}
+            <button class="w-full bg-white/90 backdrop-blur text-primary font-medium py-3 rounded-lg shadow-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cart-shopping"></i> Sepete Ekle
+            </button>
+            {% else %}
+            <button class="w-full bg-gray-200 text-gray-500 font-medium py-3 rounded-lg cursor-not-allowed flex items-center justify-center gap-2" disabled>
+                <i class="fa-solid fa-ban"></i> Tükendi
+            </button>
+            {% endif %}
+        </div>
+    </a>
+    
+    <!-- Favorite Button -->
+    <form action="{{ url_for('toggle_favorite', product_id=product.id) }}" method="POST" class="absolute top-3 right-3 z-30">
+        <button type="submit" class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-gray-50 transition-colors shadow-sm focus:outline-none" aria-label="Favorilere Ekle">
+            <i class="fa-regular fa-heart"></i>
+        </button>
+    </form>
+    
+    <!-- Info -->
+    <div class="p-4 flex-grow flex flex-col">
+        <a href="{{ url_for('search', category=product.category_id) }}" class="text-xs text-textMuted font-medium uppercase tracking-wider mb-1 hover:text-primary">{{ product.category.name }}</a>
+        <a href="{{ url_for('product_detail', id=product.id) }}" class="text-sm md:text-base font-semibold text-textMain leading-tight mb-2 hover:text-primary transition-colors line-clamp-2 flex-grow">{{ product.name }}</a>
+        
+        <div class="flex items-center gap-2 mt-auto">
+            {% if product.discount_price %}
+                <span class="text-error font-bold">₺{{ "{:,.2f}".format(product.discount_price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                <span class="text-textMuted text-sm line-through">₺{{ "{:,.2f}".format(product.price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+            {% else %}
+                <span class="text-primary font-bold">₺{{ "{:,.2f}".format(product.price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}

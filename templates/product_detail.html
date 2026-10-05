@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - LUNERA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-textMuted mb-8">
+        <a href="{{ url_for('index') }}" class="hover:text-primary transition-colors">Ana Sayfa</a>
+        <span class="mx-2">/</span>
+        <a href="#" class="hover:text-primary transition-colors">{{ product.category.name }}</a>
+        <span class="mx-2">/</span>
+        <span class="text-textMain">{{ product.name }}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <!-- Sol: Ürün Görseli -->
+        <div class="bg-gray-100 rounded-xl overflow-hidden">
+            <img src="{{ product.image or 'https://via.placeholder.com/800x1067?text=LUNERA' }}" alt="{{ product.name }}" class="w-full h-auto object-cover">
+        </div>
+
+        <!-- Sağ: Ürün Bilgileri -->
+        <div class="flex flex-col">
+            <h1 class="text-3xl font-bold text-primary mb-2">{{ product.name }}</h1>
+            <div class="flex items-center gap-4 mb-6 text-sm">
+                <span class="text-textMuted uppercase tracking-wide font-medium">{{ product.category.name }}</span>
+                <div class="flex text-yellow-400 text-xs">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+            </div>
+
+            <!-- Fiyat -->
+            <div class="flex items-center gap-4 mb-6">
+                {% if product.discount_price %}
+                    <span class="text-3xl font-bold text-error">₺{{ "{:,.2f}".format(product.discount_price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                    <span class="text-xl text-textMuted line-through">₺{{ "{:,.2f}".format(product.price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                    {% set discount_pct = ((product.price - product.discount_price) / product.price * 100) | round | int %}
+                    <span class="bg-error text-white text-xs font-bold px-2 py-1 rounded shadow-sm">%{{ discount_pct }} İNDİRİM</span>
+                {% else %}
+                    <span class="text-3xl font-bold text-primary">₺{{ "{:,.2f}".format(product.price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Açıklama -->
+            <p class="text-textMuted mb-8 leading-relaxed">
+                {{ product.description }}
+            </p>
+
+            <form action="{{ url_for('add_to_cart') }}" method="POST" class="mt-auto border-t border-gray-100 pt-8">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                
+                <!-- Renk -->
+                {% if product.color %}
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-primary mb-3 uppercase tracking-wide">Renk</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="px-4 py-2 border border-gray-300 bg-gray-50 text-textMuted rounded font-medium text-sm">{{ product.color }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Beden -->
+                {% if sizes %}
+                <div class="mb-6">
+                    <div class="flex justify-between items-end mb-3">
+                        <h3 class="text-sm font-bold text-primary uppercase tracking-wide">Beden</h3>
+                        <a href="#" class="text-xs text-textMuted hover:text-primary underline">Beden Tablosu</a>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        {% for size in sizes %}
+                        <label class="relative">
+                            <input type="radio" name="size" value="{{ size }}" class="peer sr-only" required>
+                            <div class="w-12 h-12 flex items-center justify-center border border-gray-300 rounded cursor-pointer peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary hover:border-primary transition-colors font-medium">
+                                {{ size }}
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Adet ve Butonlar -->
+                <div class="flex gap-4 items-end mt-8">
+                    <div class="w-24">
+                        <label for="quantity" class="block text-xs font-bold text-primary mb-2 uppercase tracking-wide">Adet</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="w-full px-3 py-3 border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-primary">
+                    </div>
+                    
+                    <div class="flex-grow flex gap-3">
+                        {% if product.stock > 0 %}
+                        <button type="submit" class="flex-grow bg-primary text-white font-medium py-3 rounded shadow-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-shopping"></i> Sepete Ekle
+                        </button>
+                        {% else %}
+                        <button type="button" class="flex-grow bg-gray-200 text-gray-500 font-medium py-3 rounded cursor-not-allowed flex items-center justify-center gap-2" disabled>
+                            <i class="fa-solid fa-ban"></i> Tükendi
+                        </button>
+                        {% endif %}
+                        
+                        <button type="submit" formaction="{{ url_for('toggle_favorite', product_id=product.id) }}" formnovalidate class="w-14 h-[48px] border border-gray-300 rounded flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-500 transition-colors" aria-label="Favorilere Ekle">
+                            <i class="fa-regular fa-heart text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                {% if product.stock > 0 and product.stock <= 5 %}
+                <p class="text-error text-sm font-medium mt-4"><i class="fa-solid fa-fire mr-1"></i> Acele edin, son {{ product.stock }} ürün!</p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

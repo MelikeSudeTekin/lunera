@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+
+{% block admin_content %}
+<h1 class="text-2xl font-bold text-primary mb-6">Kullanıcı Yönetimi</h1>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-xs text-textMuted uppercase border-b border-gray-100">
+                    <th class="px-6 py-4 font-medium">ID</th>
+                    <th class="px-6 py-4 font-medium">Ad Soyad</th>
+                    <th class="px-6 py-4 font-medium">E-posta</th>
+                    <th class="px-6 py-4 font-medium">Kayıt Tarihi</th>
+                    <th class="px-6 py-4 font-medium text-center">Rol</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for user in users %}
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 text-textMuted">#{{ user.id }}</td>
+                    <td class="px-6 py-4 font-medium text-primary">{{ user.first_name }} {{ user.last_name }}</td>
+                    <td class="px-6 py-4 text-textMuted">{{ user.email }}</td>
+                    <td class="px-6 py-4 text-textMuted">{{ user.created_at.strftime('%d.%m.%Y') }}</td>
+                    <td class="px-6 py-4 text-center">
+                        {% if user.is_admin %}
+                        <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold uppercase"><i class="fa-solid fa-shield-halved mr-1"></i> Admin</span>
+                        {% else %}
+                        <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded font-bold uppercase">Müşteri</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş Yap - LUNERA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-16 flex justify-center items-center min-h-[70vh]">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-primary mb-2">Giriş Yap</h1>
+            <p class="text-textMuted text-sm">LUNERA hesabınıza giriş yaparak alışverişe devam edin.</p>
+        </div>
+
+        <form action="{{ url_for('login') }}" method="POST" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-textMain mb-2">E-posta Adresi</label>
+                <input type="email" id="email" name="email" required 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                       placeholder="ornek@email.com">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-textMain mb-2">Şifre</label>
+                <input type="password" id="password" name="password" required 
+                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                       placeholder="••••••••">
+            </div>
+
+            <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center text-textMuted cursor-pointer">
+                    <input type="checkbox" class="rounded text-primary focus:ring-primary mr-2"> Beni Hatırla
+                </label>
+                <a href="#" class="text-primary font-medium hover:underline">Şifremi Unuttum</a>
+            </div>
+
+            <button type="submit" class="w-full bg-primary text-white rounded-lg px-4 py-3 font-medium hover:bg-gray-800 transition-colors">
+                Giriş Yap
+            </button>
+        </form>
+
+        <div class="mt-8 text-center text-sm text-textMuted border-t border-gray-100 pt-6">
+            Hesabınız yok mu? 
+            <a href="{{ url_for('register') }}" class="text-primary font-bold hover:underline ml-1">Hemen Kayıt Olun</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

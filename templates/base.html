@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LUNERA - Modern Giyim Alışverişi{% endblock %}</title>
+    <meta name="description" content="LUNERA - Kadın, Erkek ve Çocuk giyiminde en yeni trendler ve modern alışveriş deneyimi.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS Configuration for Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#111111',
+                        secondary: '#F7F7F7',
+                        textMain: '#222222',
+                        textMuted: '#777777',
+                        success: '#2E7D32',
+                        error: '#C62828',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #222222;
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.03);
+        }
+        .toast-notification {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-white">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-2xl focus:outline-none" aria-label="Menüyü aç">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- Logo -->
+            <div class="text-2xl font-bold tracking-widest text-primary">
+                <a href="{{ url_for('index') }}">LUNERA</a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="text-textMain hover:text-gray-500 transition-colors">Kadın</a>
+                <a href="#" class="text-textMain hover:text-gray-500 transition-colors">Erkek</a>
+                <a href="#" class="text-textMain hover:text-gray-500 transition-colors">Çocuk</a>
+                <a href="#" class="text-red-600 font-medium hover:text-red-800 transition-colors">Yeni Gelenler</a>
+                <a href="#" class="text-error font-medium hover:text-red-800 transition-colors">İndirim</a>
+            </nav>
+
+            <!-- Icons (Search, Favorites, Cart, Account) -->
+            <div class="flex items-center space-x-5">
+                <button aria-label="Ara" id="mobile-search-toggle" class="md:hidden text-textMain hover:text-gray-500 transition-colors">
+                    <i class="fa-solid fa-magnifying-glass text-xl"></i>
+                </button>
+                <form action="{{ url_for('search') }}" method="GET" class="hidden md:block relative">
+                    <input type="text" name="q" placeholder="Ürün ara..." class="pl-8 pr-4 py-1.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-48 focus:w-64 transition-all">
+                    <button type="submit" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </button>
+                </form>
+                <a href="{{ url_for('favorites') }}" aria-label="Favoriler" class="text-textMain hover:text-red-500 transition-colors">
+                    <i class="fa-regular fa-heart text-xl"></i>
+                </a>
+                <a href="{{ url_for('cart') }}" aria-label="Sepet" class="text-textMain hover:text-gray-500 transition-colors relative">
+                    <i class="fa-solid fa-cart-shopping text-xl"></i>
+                    <!-- Not: Dinamik sepet sayısı için context_processor yazılabilir, şimdilik statik veya jinja ile çözülebilir. Ancak veritabanı yormamak için statik bırakıyoruz, ileride session ile çözülür. -->
+                </a>
+                <div class="relative group">
+                    <a href="{% if current_user.is_authenticated %}{{ url_for('profile') }}{% else %}{{ url_for('login') }}{% endif %}" aria-label="Hesabım" class="text-textMain hover:text-gray-500 transition-colors flex items-center">
+                        <i class="fa-regular fa-user text-xl"></i>
+                    </a>
+                    <!-- Dropdown for logged in user -->
+                    {% if current_user.is_authenticated %}
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-100">
+                        <div class="px-4 py-3 border-b border-gray-100">
+                            <p class="text-sm font-semibold text-primary truncate">{{ current_user.first_name }} {{ current_user.last_name }}</p>
+                        </div>
+                        <div class="py-1">
+                            <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-sm text-textMain hover:bg-gray-50 transition-colors">Profilim</a>
+                            <a href="{{ url_for('orders') }}" class="block px-4 py-2 text-sm text-textMain hover:bg-gray-50 transition-colors">Siparişlerim</a>
+                            <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-error hover:bg-red-50 transition-colors">Çıkış Yap</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Search Bar -->
+    <div id="mobile-search" class="hidden bg-white border-b border-gray-100 p-4 md:hidden">
+        <form action="{{ url_for('search') }}" method="GET" class="relative">
+            <input type="text" name="q" placeholder="Ürün ara..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:border-primary">
+            <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="fixed top-20 right-4 z-50 flex flex-col gap-2" id="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast-notification bg-white border-l-4 shadow-lg p-4 rounded min-w-[300px] flex items-center justify-between
+                        {% if category == 'success' %}border-success text-success
+                        {% elif category == 'error' %}border-error text-error
+                        {% elif category == 'warning' %}border-yellow-500 text-yellow-700
+                        {% else %}border-primary text-primary{% endif %}">
+                        <div>
+                            {% if category == 'success' %}<i class="fa-solid fa-check-circle mr-2"></i>
+                            {% elif category == 'error' %}<i class="fa-solid fa-circle-exclamation mr-2"></i>
+                            {% elif category == 'warning' %}<i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                            {% else %}<i class="fa-solid fa-info-circle mr-2"></i>{% endif %}
+                            {{ message }}
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary mt-16 py-12 border-t border-gray-200">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-xl font-bold tracking-widest text-primary mb-4">LUNERA</h3>
+                <p class="text-textMuted text-sm leading-relaxed">
+                    Modern, şık ve kaliteli giyimin adresi. Yeni sezon trendlerini LUNERA ile keşfedin.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4 text-textMain">Hakkımızda</h4>
+                <ul class="space-y-2 text-sm text-textMuted">
+                    <li><a href="#" class="hover:text-primary transition-colors">Biz Kimiz?</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Mağazalarımız</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Kariyer</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4 text-textMain">Yardım</h4>
+                <ul class="space-y-2 text-sm text-textMuted">
+                    <li><a href="#" class="hover:text-primary transition-colors">Sıkça Sorulan Sorular</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Kargo ve Teslimat</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">İade ve Değişim</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">İletişim</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4 text-textMain">Yasal</h4>
+                <ul class="space-y-2 text-sm text-textMuted">
+                    <li><a href="#" class="hover:text-primary transition-colors">Gizlilik Politikası</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">KVKK Aydınlatma Metni</a></li>
+                    <li><a href="#" class="hover:text-primary transition-colors">Mesafeli Satış Sözleşmesi</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 mt-8 pt-8 border-t border-gray-300 flex flex-col md:flex-row items-center justify-between">
+            <p class="text-textMuted text-sm">© 2026 LUNERA. Tüm hakları saklıdır.</p>
+            <div class="flex space-x-4 mt-4 md:mt-0 text-textMuted">
+                <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+                <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+                <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-facebook text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS -->
+    <script>
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast-notification');
+            toasts.forEach(toast => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            });
+        }, 5000);
+        
+        const mobileSearchToggle = document.getElementById('mobile-search-toggle');
+        if(mobileSearchToggle) {
+            mobileSearchToggle.addEventListener('click', function() {
+                var searchBar = document.getElementById('mobile-search');
+                if(searchBar) searchBar.classList.toggle('hidden');
+            });
+        }
+    </script>
+</body>
+</html>

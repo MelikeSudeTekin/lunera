@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Favorilerim - LUNERA{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-primary mb-8">Favorilerim</h1>
+    
+    {% if products %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {% for product in products %}
+        <div class="group relative bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full">
+            <a href="{{ url_for('product_detail', id=product.id) }}" class="relative aspect-[3/4] bg-gray-100 overflow-hidden block">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% if product.stock == 0 %}
+                <div class="absolute top-3 left-3 z-20">
+                    <span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-sm">TÜKENDİ</span>
+                </div>
+                {% endif %}
+            </a>
+            
+            <form action="{{ url_for('toggle_favorite', product_id=product.id) }}" method="POST">
+                <button type="submit" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-gray-50 transition-colors shadow-sm focus:outline-none z-20">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            </form>
+            
+            <div class="p-4 flex-grow flex flex-col">
+                <a href="{{ url_for('product_detail', id=product.id) }}" class="text-sm md:text-base font-semibold text-textMain leading-tight mb-2 hover:text-primary transition-colors line-clamp-2 flex-grow">{{ product.name }}</a>
+                <div class="flex items-center gap-2 mt-auto">
+                    {% if product.discount_price %}
+                        <span class="text-error font-bold">₺{{ "{:,.2f}".format(product.discount_price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                    {% else %}
+                        <span class="text-primary font-bold">₺{{ "{:,.2f}".format(product.price).replace(',','X').replace('.',',').replace('X','.') }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 text-4xl mb-6">
+            <i class="fa-regular fa-heart"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-primary mb-2">Henüz favori ürününüz yok.</h2>
+        <p class="text-textMuted mb-8">Beğendiğiniz ürünleri kalp ikonuna tıklayarak favorilerinize ekleyebilirsiniz.</p>
+        <a href="{{ url_for('index') }}" class="bg-primary text-white px-8 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors shadow-lg">
+            Ürünleri Keşfet
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

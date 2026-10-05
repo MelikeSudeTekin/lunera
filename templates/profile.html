@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Profilim - LUNERA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-primary mb-8">Hesabım</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Sidebar -->
+            <div class="col-span-1">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-100">
+                        <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
+                            {{ current_user.first_name[0] }}{{ current_user.last_name[0] }}
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-lg text-primary">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
+                            <p class="text-sm text-textMuted">{{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    
+                    <nav class="space-y-2">
+                        <a href="{{ url_for('profile') }}" class="block px-4 py-3 rounded-lg bg-gray-50 text-primary font-medium transition-colors">
+                            <i class="fa-regular fa-user mr-3"></i> Profil Bilgileri
+                        </a>
+                        <a href="{{ url_for('orders') }}" class="block px-4 py-3 rounded-lg text-textMuted hover:bg-gray-50 hover:text-primary transition-colors">
+                            <i class="fa-solid fa-box mr-3"></i> Siparişlerim
+                        </a>
+                        <a href="{{ url_for('favorites') }}" class="block px-4 py-3 rounded-lg text-textMuted hover:bg-gray-50 hover:text-primary transition-colors">
+                            <i class="fa-regular fa-heart mr-3"></i> Favorilerim
+                        </a>
+                        {% if current_user.is_admin %}
+                        <a href="#" class="block px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                            <i class="fa-solid fa-gauge mr-3"></i> Admin Paneli
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('logout') }}" class="block px-4 py-3 rounded-lg text-error hover:bg-red-50 transition-colors mt-8">
+                            <i class="fa-solid fa-arrow-right-from-bracket mr-3"></i> Çıkış Yap
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="col-span-1 md:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                    <h3 class="text-xl font-bold text-primary mb-6">Kişisel Bilgiler</h3>
+                    
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-textMain mb-2">Ad</label>
+                                <input type="text" value="{{ current_user.first_name }}" readonly class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-textMuted">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-textMain mb-2">Soyad</label>
+                                <input type="text" value="{{ current_user.last_name }}" readonly class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-textMuted">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-textMain mb-2">E-posta Adresi</label>
+                            <input type="email" value="{{ current_user.email }}" readonly class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-textMuted">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-textMain mb-2">Kayıt Tarihi</label>
+                            <input type="text" value="{{ current_user.created_at.strftime('%d.%m.%Y') }}" readonly class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-textMuted">
+                        </div>
+                        
+                        <div class="pt-6 border-t border-gray-100">
+                            <button type="button" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                                Bilgileri Güncelle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

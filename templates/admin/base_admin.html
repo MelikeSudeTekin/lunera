@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Paneli - LUNERA{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-[80vh] py-8">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar -->
+        <div class="w-full md:w-64 flex-shrink-0">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
+                <div class="p-6 bg-primary text-white text-center">
+                    <i class="fa-solid fa-shield-halved text-3xl mb-2"></i>
+                    <h2 class="font-bold text-lg tracking-wide">LUNERA ADMIN</h2>
+                </div>
+                <nav class="flex flex-col py-4">
+                    <a href="{{ url_for('admin_dashboard') }}" class="px-6 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3 {% if request.endpoint == 'admin_dashboard' %}text-primary bg-gray-50 border-r-4 border-primary{% else %}text-textMuted{% endif %}">
+                        <i class="fa-solid fa-gauge w-5"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('admin_products') }}" class="px-6 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3 {% if 'admin_products' in request.endpoint or 'admin_add_product' in request.endpoint or 'admin_edit_product' in request.endpoint %}text-primary bg-gray-50 border-r-4 border-primary{% else %}text-textMuted{% endif %}">
+                        <i class="fa-solid fa-shirt w-5"></i> Ürün Yönetimi
+                    </a>
+                    <a href="{{ url_for('admin_orders') }}" class="px-6 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3 {% if request.endpoint == 'admin_orders' %}text-primary bg-gray-50 border-r-4 border-primary{% else %}text-textMuted{% endif %}">
+                        <i class="fa-solid fa-box w-5"></i> Siparişler
+                    </a>
+                    <a href="{{ url_for('admin_users') }}" class="px-6 py-3 text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-3 {% if request.endpoint == 'admin_users' %}text-primary bg-gray-50 border-r-4 border-primary{% else %}text-textMuted{% endif %}">
+                        <i class="fa-solid fa-users w-5"></i> Kullanıcılar
+                    </a>
+                    <div class="my-2 border-t border-gray-100"></div>
+                    <a href="{{ url_for('index') }}" class="px-6 py-3 text-sm font-medium text-textMuted hover:bg-gray-50 transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-globe w-5"></i> Siteye Dön
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-grow">
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
